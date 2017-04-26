@@ -1,0 +1,30 @@
+{
+  "name": "blogapi",
+  "version": "1.0.0",
+  "description": "Thinkful API Challenge",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/J-Sut/blogAPIChallenge.git"
+  },
+  "keywords": [
+    "API",
+    "thinkful",
+    "blogapi"
+  ],
+  "author": "Jeremy Sutton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/J-Sut/blogAPIChallenge/issues"
+  },
+  "homepage": "https://github.com/J-Sut/blogAPIChallenge#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "morgan": "^1.8.1",
+    "uuid": "^3.0.1"
+  }
+}

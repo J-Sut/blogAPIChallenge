@@ -46,10 +46,10 @@ router.put('/:id', jsonParser, (req, res) => {
 	const requiredFields = ['title', 'content', 'author', 'publishDate', 'id'];
 	for (let i=0; i<requiredFields.length; i++) {
 		const field = requiredFields[i];
-		if (!(field in requiredFields)) {
+		if (!(field in req.body)) {
 			const message = `Missing \`${field}\` in request body`; 
 			console.error(message);
-			return res.status(400).send(message);
+			return res.status(417).send(message);
 		}	
 	}
 	if (req.params.id !== req.body.id) {

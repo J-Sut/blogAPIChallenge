@@ -8,6 +8,7 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 describe('Blog Api', function() {
+	
 	before(function() {
 		return runServer();
 	});
@@ -36,7 +37,7 @@ describe('Blog Api', function() {
 	});
 
 	it('should add a new post on POST', function(){
-		const newPost = {title: 'new post title', author: 'cool chick', content: 'is your mind blown yet?'}
+		const newPost = {title: 'new post title', author: 'cool dude', content: 'is your mind blown yet?'}
 		return chai.request(app)
 			.post('/blog')
 			.send(newPost)
@@ -49,7 +50,7 @@ describe('Blog Api', function() {
 			});
 	});
 
-	it('should update the blog when on PUT', function(){
+	it('should update the blog on PUT', function(){
 	    const updateData = {
 	      title: 'foo',
 	      author: 'some guy',
@@ -72,13 +73,6 @@ describe('Blog Api', function() {
 	    		res.body.should.deep.equal(updateData)
 	    	});
 	});
-
-
-
-
-
-
-
 
 
 	// it('should add an item on POST', function(){

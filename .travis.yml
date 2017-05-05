@@ -1,9 +1,2 @@
 language: node_js
 node_js: node
-deploy: limitless-headland-98763
-  provider: heroku
-  api_key:
-    secure: QJa86zzy9durC8n/Xx3M605+n32mUQu+N1GO39WiDKpbm+8nVE+emJ9ejCQh7Uy7qxwEgG1GlZ5l/L3pcoYrwsP2dCe8RMuyIRTYIYBE3/TsRNzO6OJzM8t7ibMR2rpjYSyHeSpL/ykhnmh1VvyFsjyBhYXCT1yZwfS7V/8WRcCGKT9lSuan8JcjUh2mCFyPXgpQy38hAiJFGhHEkn164qXeudezstkG68eox+lSJB/9aajQUSNmYKW+VZDzy2qUO0ZjV9Ri6prw4VRLnMotX/dF/TL4PmHaAXvUkL8AvSNEXn++D6VcoK34ZOJtqZ7H1sgAvXaT0wDUFj7DqAENJg4riFjhEo/aBi1UiYW2k+sQtHn7hwicHLQ8Bl7O/5cEZoPyZOoJDyI1SUjPjFxU3mOPE+P/SzcZSTdJAGVxJRJ/4CitHAOUySlyDT65mnZX2jXOd9a+u4MmO7bUnCagekJ1syAOuEao+ufBJ0f1bWPnxb9HJ3mgXcO9RjSxmyV7FC6e+vBEkuxpHth16wH9PTzid888QKnEZfUIPVb49J/8h5uz34xUkmN4ba3UAnjIUpAB8C7KjQw5MPnLjGSIiiNocPKWc9Zy3fsUvcCWQyka2LYlAtJf7HeGVyE4aiC9X9aaEQ+1QQP9QJxVygqJWJSwWwTbQVU6dShC1oj2FW0=
-  app: blogAPIChallenge
-  on:
-    repo: J-Sut/blogAPIChallenge

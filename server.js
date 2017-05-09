@@ -1,9 +1,16 @@
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-const {BlogPosts} = require('./models');
+mongoose.Promise = global.Promise;
+
+const {DATABASE_URL, PORT} = require('./config');
+
+const {BlogPosts, Blog} = require('./models');
 
 const app = express();
+app.use(bodyParser.json());
 
 const blogRouter = require('./blogRouter');
 
@@ -13,15 +20,15 @@ app.use(morgan('common'));
 BlogPosts.create('Harry Potter', 'it was a long book with a lot happening', 'J.K. Rowling', Date.now());
 BlogPosts.create('Mind Clear as a Crystal', 'When the waters of the mind calm, clarity results','J.M. Sutton', Date.now());
 
-app.use('/blog', blogRouter);
+app.use('/', blogRouter);
 //app.use('/blog/comments', commentRouter);
 //GET http://localhost:8080/blog/
 //POST http://localhost:8080/blog/
 //GET http://localhost:8080/blog/comments/
 	
-//app.listen(process.env.PORT || 8080, () => {
-//	console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
-//});
+// app.listen(process.env.PORT || 8080, () => {
+// 	console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
+// }); 
 
 
 // ************* From Integration Testing Challenge ****************
@@ -58,7 +65,7 @@ function closeServer() {
       resolve();
     });
   });
-}
+};
 
 // if server.js is called directly (aka, with `node server.js`), this block
 // runs. but we also export the runServer command so other code (for instance, test code) can start the server as needed.

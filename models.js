@@ -1,4 +1,35 @@
 const uuid = require('uuid');
+const mongoose = require('mongoose');
+
+//make a schema for to represent a restaurant
+
+const blogSchema = mongoose.Schema({
+  title: {type: String, required: true},
+  content: {type: String, required: true},
+  author: {type: String, required: true},
+  created: {type: Date, required: true}
+});
+
+
+blogSchema.virtual('blogString').get(function() {
+  return `${this.address.building} ${this.address.street}`.trim()});
+
+blogSchema.virtual('grade').get(function() {
+  const gradeObj = this.grades.sort((a, b) => {return b.date - a.date})[0] || {};
+  return gradeObj.grade;
+  });
+
+// blogSchema.methods.apiRepr = function() {
+
+//   return {
+//     id: this._id,
+//     name: this.name,
+//     cousine: this.cousine,
+//     borough: this.borough,
+//     grade: this.grade,
+//     address: this.address
+//   };
+// };
 
 // This module provides volatile storage, using a `BlogPost`
 // model. We haven't learned about databases yet, so for now
@@ -66,5 +97,11 @@ function createBlogPostsModel() {
   return storage;
 }
 
+const Blog = mongoose.model('Blog', blogSchema);
+// module.exports = {Blog};
 
-module.exports = {BlogPosts: createBlogPostsModel()};
+module.exports.BlogPosts = createBlogPostsModel();
+module.exports.Blog = {Blog};
+
+
+//module.exports = {BlogPosts: createBlogPostsModel()};

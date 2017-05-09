@@ -5,14 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
-
 const {Blog, BlogPosts} = require('./models.js');
-console.log(Blog);
-
-// Do I need to add blog entries here just to have something 
-// since we're not working with databases yet? 
-
-
 
 // Get requests on root
 router.get('/', (req, res) => {
@@ -77,25 +70,26 @@ router.put('/:id', jsonParser, (req, res) => {
 
 //Get request to restaurants => return 10 
 
-router.get('/blogs', (req, res) => {
-  const filters = {};
+router.get('/posts', (req, res) => {
+	const filters = {};
   const queryableFields = ['title', 'content', 'author'];
   queryableFields.forEach(field => {
     if (req.query[field]) {
       filters[field] = req.query[field];
     }
   });
-  console.log(filters);
   Blog
-    .find(filters)
-    .exec()
-    .then(Blog => res.json(
-      Blogs.map(blog => blog.apiRepr())
-      ))
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({message: 'Internal server error'})
-    });
+  .find(filters)
+  .exec()
+  .then(posts => {
+  	res.json(
+  		posts.map(post => post.apiRepr())
+  	)
+  })
+  .catch(err => {
+  	console.error(err);
+  	res.status(500).json({message: 'Internal server error'})
+  });
 });
 
 // //get request by ID

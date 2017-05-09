@@ -19,17 +19,16 @@ blogSchema.virtual('grade').get(function() {
   return gradeObj.grade;
   });
 
-// blogSchema.methods.apiRepr = function() {
-
-//   return {
-//     id: this._id,
-//     name: this.name,
-//     cousine: this.cousine,
-//     borough: this.borough,
-//     grade: this.grade,
-//     address: this.address
-//   };
-// };
+blogSchema.methods.apiRepr = function(){
+  return {
+    id: this._id,
+    name: this.name,
+    cousine: this.cousine,
+    borough: this.borough,
+    grade: this.grade,
+    address: this.address
+  };
+};
 
 // This module provides volatile storage, using a `BlogPost`
 // model. We haven't learned about databases yet, so for now
@@ -98,10 +97,9 @@ function createBlogPostsModel() {
 }
 
 const Blog = mongoose.model('Blog', blogSchema);
-// module.exports = {Blog};
 
-module.exports.BlogPosts = createBlogPostsModel();
-module.exports.Blog = {Blog};
+//module.exports.BlogPosts = createBlogPostsModel();
+module.exports = {Blog};
 
 
 //module.exports = {BlogPosts: createBlogPostsModel()};

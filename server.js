@@ -17,10 +17,10 @@ const blogRouter = require('./blogRouter');
 app.use(morgan('common'));
 
 // preloaded data since not working with DB yet
-BlogPosts.create('Harry Potter', 'it was a long book with a lot happening', 'J.K. Rowling', Date.now());
-BlogPosts.create('Mind Clear as a Crystal', 'When the waters of the mind calm, clarity results','J.M. Sutton', Date.now());
+//BlogPosts.create('Harry Potter', 'it was a long book with a lot happening', 'J.K. Rowling', Date.now());
+//BlogPosts.create('Mind Clear as a Crystal', 'When the waters of the mind calm, clarity results','J.M. Sutton', Date.now());
 
-app.use('/', blogRouter);
+app.use('/blog', blogRouter);
 //app.use('/blog/comments', commentRouter);
 //GET http://localhost:8080/blog/
 //POST http://localhost:8080/blog/

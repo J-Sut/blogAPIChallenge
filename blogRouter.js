@@ -85,7 +85,7 @@ router.get('/blogs', (req, res) => {
       filters[field] = req.query[field];
     }
   });
-  console.log(filters);
+
   Blog
     .find(filters)
     .exec()

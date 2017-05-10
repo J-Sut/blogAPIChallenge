@@ -7,7 +7,7 @@ mongoose.Promise = global.Promise;
 
 const {DATABASE_URL, PORT} = require('./config');
 
-const {BlogPosts, Blog} = require('./models');
+const {Blog} = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
@@ -17,14 +17,10 @@ const blogRouter = require('./blogRouter');
 app.use(morgan('common'));
 
 // preloaded data since not working with DB yet
-BlogPosts.create('Harry Potter', 'it was a long book with a lot happening', 'J.K. Rowling', Date.now());
-BlogPosts.create('Mind Clear as a Crystal', 'When the waters of the mind calm, clarity results','J.M. Sutton', Date.now());
+// BlogPosts.create('Harry Potter', 'it was a long book with a lot happening', 'J.K. Rowling', Date.now());
+// BlogPosts.create('Mind Clear as a Crystal', 'When the waters of the mind calm, clarity results','J.M. Sutton', Date.now());
 
-app.use('/', blogRouter);
-//app.use('/blog/comments', commentRouter);
-//GET http://localhost:8080/blog/
-//POST http://localhost:8080/blog/
-//GET http://localhost:8080/blog/comments/
+app.use('/blog', blogRouter);
 	
 // app.listen(process.env.PORT || 8080, () => {
 // 	console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
@@ -38,14 +34,19 @@ let server;
 // this function starts our server and returns a Promise.
 // In our test code, we need a way of asynchronously starting
 // our server, since we'll be dealing with promises there.
-function runServer() {
-  const port = process.env.PORT || 8080;
+function runServer(databaseUrl=DATABASE_URL, port=PORT) {
+
   return new Promise((resolve, reject) => {
-    server = app.listen(port, () => {
-      console.log(`Your app is listening on port ${port}`);
-      resolve(server);
-    }).on('error', err => {
-      reject(err)
+      mongoose.connect(databaseUrl, err => {
+        if (err) {
+          return reject(err);
+        }
+        server = app.listen(port, () => {
+          console.log(`Your app is listening on port ${port}`);
+          resolve(server);
+        }).on('error', err => {
+          reject(err)
+      });   
     });
   });
 };
@@ -54,17 +55,20 @@ function runServer() {
 // `server.close` does not return a promise on its own, so we manually
 // create one.
 function closeServer() {
-  return new Promise((resolve, reject) => {
-    console.log('Closing server');
-    server.close(err => {
-      if (err) {
-        reject(err);
-        // so we don't also call `resolve()`
-        return;
-      }
-      resolve();
+  return mongoose.disconnect().then(() =>{
+    return new Promise((resolve, reject) => {
+      console.log('Closing server');
+      server.close(err => {
+        if (err) {
+          reject(err);
+          // so we don't also call `resolve()`
+          return;
+        }
+        resolve();
+      });
     });
   });
+
 };
 
 // if server.js is called directly (aka, with `node server.js`), this block

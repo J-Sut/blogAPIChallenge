@@ -5,11 +5,20 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
-const {Blog, BlogPosts} = require('./models.js');
+const {Blog} = require('./models.js');
 
 // Get requests on root
-router.get('/', (req, res) => {
-	res.json(BlogPosts.get());
+router.get('/', (req, res) => {	
+	Blog
+		.find()
+		.exec()
+		.then(function(blogposts){
+			console.log(blogposts);
+			res.status(200).json(blogposts);
+		})
+		.catch(function(err) {
+			res.status(500);
+		}); 
 });
 
 // Post requests on root

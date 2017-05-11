@@ -7,75 +7,9 @@ const jsonParser = bodyParser.json();
 
 const {Blog} = require('./models.js');
 
-// Get requests on root
-router.get('/', (req, res) => {	
-	Blog
-		.find()
-		.exec()
-		.then(function(blogposts){
-			console.log(blogposts);
-			res.status(200).json(blogposts);
-		})
-		.catch(function(err) {
-			res.status(500);
-		}); 
-});
-
-// Post requests on root
-
-router.post('/', jsonParser, (req, res) => {
-	const requiredFields = ['title', 'content', 'author'];
-	for (let i=0; i<requiredFields.length; i++) {
-		const field = requiredFields[i];
-		if (!(field in req.body)) {
-			const message = `Missing \`${field}\` in request body`;
-			console.error(message);
-			return res.status(400).send(message);
-		}
-	}
-	const post = BlogPosts.create(req.body.title, req.body.content, req.body.author);
-	res.status(200).json(post);
-});
-
-// Delete requests on root
-router.delete('/:id', (req, res) => {
-	BlogPosts.delete(req.params.id);
-	console.log(`Deleted shopping list item \`${req.params.id}\``);
-	res.status(204).end();
-});
-
-// Put requests on root
-
-router.put('/:id', jsonParser, (req, res) => {
-	const requiredFields = ['title', 'content', 'author', 'publishDate', 'id'];
-	for (let i=0; i<requiredFields.length; i++) {
-		const field = requiredFields[i];
-		if (!(field in req.body)) {
-			const message = `Missing \`${field}\` in request body`; 
-			console.error(message);
-			return res.status(400).send(message);
-		}	
-	}
-	if (req.params.id !== req.body.id) {
-		const message = (
-			`Request path id (${req.params.id}) and request body id `
-			`(${req.body.id}) must match`);
-		console.error(message);
-		return res.status(400).send(message)
-	}
-	console.log(`Upadating blog post item \`${req.params.id}\``);
-	const updatedPost = BlogPosts.update({
-		id: req.params.id,
-		title: req.body.title,
-		content: req.body.content,
-		author: req.body.author,
-		publishDate: req.body.publishDate	
-	});
-	res.status(201).json(updatedPost);
-});
 
 
-// ******* Requests made to /blogs *******
+// ******* Requests made to /blog *******
 
 //Get request to restaurants => return 10 
 
@@ -103,92 +37,83 @@ router.get('/posts', (req, res) => {
 
 // //get request by ID
 
-// app.get('/restaurants/:id', (req, res) => {
-//   Restaurant
-//     .findbyId(req.params.id)
-//     .exec()
-//     .then(restaurant => res.json(restaurant.apiRepr()))
-//     .catch(err => {
-//       console.error(err);
-//         res.status(500).json({message: 'Internal server error'})
-//     });
-// });
+router.get('/posts/:id', (req, res) => {
+  Blog
+    .findById(req.params.id)
+    .exec()
+    .then(post => res.json(post.apiRepr()))
+    .catch(err => {
+      console.error(err);
+        res.status(500).json({message: 'Internal server error'})
+    });
+});
 
-// app.post('/restaurants', (req, res) => {
+router.post('/posts', (req, res) => {
 
-//   const requiredFields = ['name', 'borough', 'cuisine'];
-//   for (let i=0; i<requiredFields.length; i++) {
-//     const field = requiredFields[i];
-//     if (!(field in req.body)) {
-//       const message = `Missing \`${field}\` in request body`
-//       return res.status(400).send(message);
-//     }
-//   }
+  const requiredFields = ['title', 'content', 'author'];
+  for (let i=0; i<requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`
+      return res.status(400).send(message);
+    };
+  };
 
-//   Restaurant
-//     .create({
-//       name: req.body.name,
-//       borough: req.body.borough,
-//       cuisine: req.body.cuisine,
-//       grades: req.body.grades,
-//       address: req.body.address})
-//     .then(
-//       restaurant => res.status(201).json(restaurant.apiRepr()))
-//     .catch(err => {
-//       console.error(err);
-//       res.status(500).json({message: 'Internal server error'});
-//   });
-// });
+  Blog
+    .create({
+      title: req.body.title,
+      content: req.body.content,
+      author: req.body.author})
+    .then(
+      post => res.status(201).json(post.apiRepr()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Internal server error'})
+    });
+ });
 
-// app.put('/restaurants/:id', (res, res) => {
+router.put('/posts/:id', (req, res) => {
 
-//   if (! (req.params.id && req.body.id === req.body.id)) {
-//     const message = (
-//       `Request path id (${req.params.id}) and request body id ` +
-//       `(${req.body.id}) must match`);
-//     console.error(message);
-//     res.status(400).json({message: message});
-//   }
+  if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
+    const message = (
+      `Request path id (${req.params.id}) and request body id ` +
+      `(${req.body.id}) must match`);
+    console.error(message);
+    res.status(400).json({message: message});
+  };
 
-//   const toUpdate = {};  
-//   const updateableFields = ['name', 'borough', 'cuisine', 'address'];
+  const toUpdate = {};  
+  const updateableFields = ['title', 'content', 'author'];
 
-//   updateableFields.forEach(field => {
-//     if (field in req.body) {
-//       toUpdate[field] = req.body[field];
-//     }
-//   });
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      toUpdate[field] = req.body[field];
+    }
+  });
 
-//   Restaurant
-//     .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-//     .exec()
-//     .then(restaurant => res.status(204).end())
-//     .catch(err => res.status(500).json({message: 'Internal server error'}));
-// });
+  Blog
+    .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+    .exec()
+    .then(post => res.json(post.apiRepr()).status(204).end())
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
 
-// app.delete('restaurants/:id', (req, res) => {
-//   Restaurant
-//     .findByIdAndRemove(req.params.id)
-//     .exec()
-//     .then(restaurant => res.status(204).end())
-//     .catch(err => res.status(500).json({message: 'Internal server error'}));
-// });
+router.delete('/posts/:id', (req, res) => {
+  	console.log('1 before statment');
 
-// app.use('*', function(req, res) {
-//   res.status(404).json({message: 'Not Found'});
+  Blog
+    .findByIdAndRemove(req.params.id)
+    .exec()
+    .then(post => res.status(204).end())
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
+// router.use('*', function(req, res) {
+//   res.status(404).json({message: 'Page Not Found...keep looking'});
 // });
 
 
 module.exports = router
-
-
-
-
-
-
-
-
-
 
 
 

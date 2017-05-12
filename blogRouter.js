@@ -7,8 +7,6 @@ const jsonParser = bodyParser.json();
 
 const {Blog} = require('./models.js');
 
-
-
 // ******* Requests made to /blog *******
 
 //Get request to restaurants => return 10 
@@ -108,10 +106,9 @@ router.delete('/posts/:id', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-// router.use('*', function(req, res) {
-//   res.status(404).json({message: 'Page Not Found...keep looking'});
-// });
-
+router.use('*', function(req, res) {
+  res.status(404).json({message: 'Page Not Found...keep looking'});
+});
 
 module.exports = router
 

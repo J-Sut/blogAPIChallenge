@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/J-Sut/blogAPIChallenge#readme",
   "dependencies": {
+    "Faker": "^0.7.2",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "faker": "^4.1.0",

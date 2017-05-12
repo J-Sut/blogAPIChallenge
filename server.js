@@ -68,7 +68,6 @@ function closeServer() {
       });
     });
   });
-
 };
 
 // if server.js is called directly (aka, with `node server.js`), this block

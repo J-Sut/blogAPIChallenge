@@ -19,6 +19,7 @@ router.get('/posts', (req, res) => {
       filters[field] = req.query[field];
     }
   });
+
   Blog
   .find(filters)
   .exec()

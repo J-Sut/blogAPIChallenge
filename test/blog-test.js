@@ -95,44 +95,44 @@ describe('Blog Api', function() {
 		});		
 	});
 
-	// describe('PUT endpoint', function() {
+	describe('PUT endpoint', function() {
 		
-	// 	it('should update the blog on PUT', function(){
-	// 	    const updateData = {
-	// 	      // id: faker.random.uuid(),
-	// 	      title: 'foo',
-	// 	      content: 'good stuff, very well written',
-	// 	      author: {
-	// 	      	firstName: 'some',
-	// 	      	lastName: 'guy'
-	// 	      }
-	// 	    };		
+		it('should update the blog on PUT', function(){
+		    const updateData = {
+		      // id: faker.random.uuid(),
+		      title: 'foo',
+		      content: 'good stuff, very well written',
+		      author: {
+		      	firstName: 'some',
+		      	lastName: 'guy'
+		      }
+		    };		
 
 
-	// 	    // ************ Problem: I think the object is updating correctly 
-	// 	    // but I think the response is returning the item prior to the update
-	// 	    // because that's what seemed to be happening when I made the put endpoint
+		    // ************ Problem: I think the object is updating correctly 
+		    // but I think the response is returning the item prior to the update
+		    // because that's what seemed to be happening when I made the put endpoint
 	
-	// 	    return Blog
-	// 	    	.findOne()
-	// 	    	.exec()
-	// 	    	.then(function(post) {
-	// 	    		updateData.id = post.id;
-	// 	    		return chai.request(app)
-	// 	    			.put(`/blog/posts/${updateData.id}`)
-	// 	    			.send(updateData);
-	// 	    	})
-	// 	    	.findById(`${updateData.id}`, function(err, res) {
-	// 	    		return res
-	// 	    	})
-	// 	    	.then(function(res){
-	// 	    		res.should.have.status(200);
-	// 	    		res.should.be.json;
-	// 	    		res.body.should.be.a('object');
-	// 	    		res.body.should.deep.equal(updateData)
-	// 	    	});
-	// 	});
-	// });
+		    return Blog
+		    	.findOne()
+		    	.exec()
+		    	.then(function(post) {
+		    		updateData.id = post.id;
+		    		return chai.request(app)
+		    			.put(`/blog/posts/${updateData.id}`)
+		    			.send(updateData);
+		    	})
+		    	// .findById(`${updateData.id}`, function(err, res) {
+		    	// 	return res
+		    	})
+		    	.then(function(res){
+		    		res.should.have.status(200);
+		    		res.should.be.json;
+		    		res.body.should.be.a('object');
+		    		res.body.should.deep.equal(updateData)
+		    	});
+		});
+	});
 	
 	describe('DELETE endpoint', function() {	
 	

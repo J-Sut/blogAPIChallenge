@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const {DATABASE_URL, PORT} = require('./config');
+const {TEST_DATABASE_URL} = require('./blogRouter');
+
 
 const {Blog} = require('./models');
 
@@ -24,7 +26,7 @@ app.use('/blog', blogRouter);
 	
 // app.listen(process.env.PORT || 8080, () => {
 // 	console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
-// }); 
+// });  
 
 
 // ************* From Integration Testing Challenge ****************

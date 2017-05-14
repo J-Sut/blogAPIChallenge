@@ -1,30 +1,70 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-
-const {app, runServer, closeServer} = require('../server');
+const faker = require('faker');
+const mongoose = require('mongoose');
 
 const should = chai.should();
 
+const {app, runServer, closeServer} = require('../server');
+const {Blog} = require('../models');
+const {TEST_DATABASE_URL} = require('../config');
+
 chai.use(chaiHttp);
+
+function seedBlogData(){
+	console.info('seeding blog data');
+	const seedData = [];
+
+	for (let i=1; i<+10; i++){
+		seedData.push(generateBlogData());
+	}
+	return Blog.insertMany(seedData);
+}; 
+
+function generateBlogData() {
+
+	return {
+		title: faker.lorem.words(),
+		content: faker.lorem.paragraph(),
+		author: {
+			firstName: faker.name.firstName(),
+			lastName: faker.name.lastName()
+		}
+	}
+};
+
+function tearDownDb() {
+	console.warn('Deleting database');
+	return mongoose.connection.dropDatabase();
+};
 
 describe('Blog Api', function() {
 	
 	before(function() {
-		return runServer();
+		return runServer(TEST_DATABASE_URL);
+	});
+
+	beforeEach(function() {
+		return seedBlogData();
+	});
+
+	afterEach(function() {
+		return tearDownDb();
 	});
 
 	after(function(){
 		return closeServer();
 	});
 
-	it('should list items on GET', function() {
-		return chai.request(app)
-			.get('/blog')
+	describe('GET endpoint', function() {
+
+		it('should list items on GET', function() {
+			return chai.request(app)
+			.get('/blog/posts')
 			.then(function(res) {
 				res.should.have.status(200);
 				res.should.be.json;
 				res.body.should.be.an('array');
-
 
 				res.body.length.should.be.at.least(1);
 
@@ -34,96 +74,78 @@ describe('Blog Api', function() {
 					item.should.include.keys(expectedKeys);
 				});
 			});
+		});
 	});
 
-	it('should add a new post on POST', function(){
-		const newPost = {title: 'new post title', author: 'cool dude', content: 'is your mind blown yet?'}
-		return chai.request(app)
-			.post('/blog')
-			.send(newPost)
-			.then(function(res){
-				res.should.have.status(200);
-				res.should.be.json;
-				res.body.should.include.keys('title', 'author', 'content', 'publishDate');
-				res.body.id.should.not.be.null;
-				res.body.should.deep.equal(Object.assign(newPost, {id: res.body.id, publishDate:res.body.publishDate}));
-			});
+	describe('POST endpoint', function() {
+	
+		it('should add a new post on POST', function() {
+	
+			const newPost = generateBlogData();
+			return chai.request(app)
+				.post('/blog/posts')
+				.send(newPost)
+				.then(function(res){
+					res.should.have.status(201);
+					res.should.be.json;
+					res.body.should.include.keys('title', 'author', 'content', 'id');
+					res.body.id.should.not.be.null;
+					res.body.should.deep.equal(Object.assign(newPost, {id: res.body.id}));
+				});
+		});		
 	});
 
-	it('should update the blog on PUT', function(){
-	    const updateData = {
-	      title: 'foo',
-	      author: 'some guy',
-	      content: 'good stuff, very well written',
-	      publishDate: Date.now()
-	    };		
-
-	    return chai.request(app)
-	    	.get('/blog')
-	    	.then(function(res) {
-	    		updateData.id = res.body[0].id;
-	    		return chai.request(app)
-	    			.put(`/blog/${updateData.id}`)
-	    			.send(updateData);
-	    	})
-	    	.then(function(res){
-	    		res.should.have.status(201);
-	    		res.should.be.json;
-	    		res.body.should.be.a('object');
-	    		res.body.should.deep.equal(updateData)
-	    	});
-	});
+	describe('PUT endpoint', function() {
+		
+		it('should update the blog on PUT', function(){
+		    const updateData = {
+		      // id: faker.random.uuid(),
+		      title: 'foo',
+		      content: 'good stuff, very well written',
+		      author: {
+		      	firstName: 'some',
+		      	lastName: 'guy'
+		      }
+		    };		
 
 
-	// it('should add an item on POST', function(){
-	// 	const newPost = {title: "Mind Games", author: "Suzie Q", content: "the key to the mind game is to never forget to ..." };
-	// 	return chai.request(app)
-	// 		.post('/blog')
-	// 		.send(newPost)
-	// 		.then(function(res){
-	// 			res.should.have.status(200);
-	// 			res.should.be.json;
-	// 			res.body.should.be.a('object');
-	// 			res.body.should.include.keys('title', 'author', 'content', 'publishDate');
-	// 			res.body.id.should.not.be.null;
-	// 			res.body.should.deep.equal(Object.assign(newPost, {id: res.body.id, publishDate: res.body.publishDate}));
-	// 		});
-	// });
-
-	// it('should update items on PUT', function(){
-	// 	const updateData = {
-	// 		title: 'Cool stuff',
-	// 		author: 'Jam',
-	// 		content: 'Woah... It totally worked...!',
-	// 		publishDate: Date.now()
-	// 	};
-
-	// 	return chai.request(app)
-	// 		.get('/blog')
-	// 		.then(function(res) {
-	// 			updateData.id = res.body[0].id;
-	// 			return chai.request(app)
-	// 				.put(`/blog/${updateData.id}`)
-	// 				.send(updateData);
-	// 		})
-	// 		.then(function(res){
-	// 			res.should.have.status(201);
-	// 			res.should.be.json;
-	// 			res.body.should.be.a('object');
-	// 			res.body.should.deep.equal(updateData);
-	// 		});
-	// });
-
-
-	it('should delete items on DELETE', function(){
-		return chai.request(app)
-			.get('/blog')
-			.then(function(res){
-				return chai.request(app)
-					.delete(`/blog/${res.body[0].id}`);
-			})
-			.then(function(res){
-				res.should.have.status(204);
-			});
+		    // ************ Problem: I think the object is updating correctly 
+		    // but I think the response is returning the item prior to the update
+		    // because that's what seemed to be happening when I made the put endpoint
+	
+		    return Blog
+		    	.findOne()
+		    	.exec()
+		    	.then(function(post) {
+		    		updateData.id = post.id;
+		    		return chai.request(app)
+		    			.put(`/blog/posts/${updateData.id}`)
+		    			.send(updateData);
+		    	})
+		    	// .findById(`${updateData.id}`, function(err, res) {
+		    	// 	return res
+		    	// })
+		    	.then(function(res){
+		    		res.should.have.status(200);
+		    		res.should.be.json;
+		    		res.body.should.be.a('object');
+		    		res.body.should.deep.equal(updateData)
+		    	});
+		});
+	}); 
+	
+	describe('DELETE endpoint', function() {	
+	
+		it('should delete items on DELETE', function(){
+			return chai.request(app)
+				.get('/blog/posts')
+				.then(function(res){
+					return chai.request(app)
+						.delete(`/blog/posts/${res.body[0].id}`);
+				})
+				.then(function(res){
+					res.should.have.status(204);
+				});
+		});
 	});
 });

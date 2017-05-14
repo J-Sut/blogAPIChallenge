@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
-const {Blog} = require('./models.js');
+const {Blog} = require('./models');
 
 // ******* Requests made to /blog *******
 
@@ -90,7 +90,7 @@ router.put('/posts/:id', (req, res) => {
   });
 
   Blog
-    .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+    .findByIdAndUpdate(req.params.id, {$set: toUpdate}, {new: true})
     .exec()
     .then(post => res.json(post.apiRepr()).status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));

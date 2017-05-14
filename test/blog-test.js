@@ -7,7 +7,7 @@ const should = chai.should();
 
 const {app, runServer, closeServer} = require('../server');
 const {Blog} = require('../models');
-const {TEST_DATABASE_URL} = require('../blogRouter');
+const {TEST_DATABASE_URL} = require('../config');
 
 chai.use(chaiHttp);
 
@@ -124,7 +124,7 @@ describe('Blog Api', function() {
 		    	})
 		    	// .findById(`${updateData.id}`, function(err, res) {
 		    	// 	return res
-		    	})
+		    	// })
 		    	.then(function(res){
 		    		res.should.have.status(200);
 		    		res.should.be.json;
@@ -132,7 +132,7 @@ describe('Blog Api', function() {
 		    		res.body.should.deep.equal(updateData)
 		    	});
 		});
-	});
+	}); 
 	
 	describe('DELETE endpoint', function() {	
 	
@@ -148,6 +148,4 @@ describe('Blog Api', function() {
 				});
 		});
 	});
-
-
 });

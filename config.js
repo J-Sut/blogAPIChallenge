@@ -4,6 +4,6 @@ exports.DATABASE_URL = process.env.DATABASE_URL ||
                       
 exports.TEST_DATABASE_URL = (
 						process.env.TEST_DATABASE_URL ||
-						'mongodb://localhost/test-blog-app');  
+						'mongodb://blogApiJam:NPf6vxX7z52ytNHD@ds143191.mlab.com:43191/thinkful-blog-api');  
 
 exports.PORT = process.env.PORT || 8080;
